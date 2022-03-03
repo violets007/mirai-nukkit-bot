@@ -24,4 +24,4 @@ jobs:
         uses: actions/upload-artifact@v2.3.1
         with:
           name: "mirai-nukkit-bot-SNAPSHOT.jar"
-          path: target/mirai-nukkit-bot-SNAPSHOT.jar
+          path: mirai-nukkit-bot/target/mirai-nukkit-bot-SNAPSHOT.jar
