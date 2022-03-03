@@ -20,8 +20,8 @@ jobs:
         run: mvn -B package --file pom.xml
 
       # mirai-nukkit-bot-SNAPSHOT.jar
-      - name: Upload a Build Artifact - mirai-nukkit-bot
-        uses: actions/upload-artifact@v2.3.1
+      - run: mkdir staging && cp target/*.jar staging
+      - uses: actions/upload-artifact@v1
         with:
-          name: "mirai-nukkit-bot-SNAPSHOT.jar"
-          path: mirai-nukkit-bot/target/mirai-nukkit-bot-SNAPSHOT.jar
+          name: mirai-nukkit-bot
+          path: staging
