@@ -322,7 +322,9 @@ public class BotPlugin extends PluginBase implements Listener {
                         return;
                     }
 
-                    getServer().broadcastMessage("[group]: " + getPlayerNameByQQ(e.getSenderID()) + " >> " + commands[1]);
+                    message = message.substring(message.indexOf(" ", 0), message.length());
+
+                    getServer().broadcastMessage("[group]: " + getPlayerNameByQQ(e.getSenderID()) + " >> " + message);
                     break;
                 case "#群帮助命令":
                     sendHelpByQQGroup(group);
@@ -349,7 +351,7 @@ public class BotPlugin extends PluginBase implements Listener {
                 message = TextFormat.clean(message.replace("{msg}", msg));
                 bot.getGroup(groupIds.get(0)).sendMessageMirai(message);
             } else {
-                bot.getGroup(groupIds.get(0)).sendMessageMirai("[MCPE] :" + name + " >> " + msg);
+                bot.getGroup(groupIds.get(0)).sendMessageMirai("[MCPE]: " + name + " >> " + msg);
             }
 
         }
