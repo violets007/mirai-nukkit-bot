@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>top.zixuan007</groupId>
+    <artifactId>mirai-nukkit-bot</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <licenses>
+        <license>
+            <name>GNU Affero General Public License v3.0</name>
+            <url>https://www.gnu.org/licenses/agpl-3.0.html</url>
+        </license>
+    </licenses>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+    </properties>
+
+    <repositories>
+        <repository>
+            <id>opencollab-repo-release</id>
+            <url>https://repo.opencollab.dev/maven-releases/</url>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>opencollab-repo-snapshot</id>
+            <url>https://repo.opencollab.dev/maven-snapshots/</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+
+    </repositories>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>cn.nukkit</groupId>
+            <artifactId>nukkit</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!--   暂时没有仓库用本地     -->
+        <dependency>
+            <groupId>com.smallaswater.tips</groupId>
+            <artifactId>Tips</artifactId>
+            <version>2.1.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/Local-Dependencies/Tips_v2.1.2.jar</systemPath>
+        </dependency>
+
+        <!--   暂时没有仓库用本地     -->
+        <dependency>
+            <groupId>io.github.dreamvoid</groupId>
+            <artifactId>MiraiMC</artifactId>
+            <version>1.6</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/Local-Dependencies/MiraiMC-Nukkit.jar</systemPath>
+        </dependency>
+
+    </dependencies>
+
+</project>
