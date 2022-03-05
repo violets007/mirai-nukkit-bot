@@ -3,8 +3,8 @@ package top.zixuan007.bot.command;
 import cn.nukkit.Server;
 import cn.nukkit.command.ConsoleCommandSender;
 import cn.nukkit.permission.Permission;
+import cn.nukkit.utils.TextFormat;
 import top.zixuan007.bot.BotPlugin;
-import top.zixuan007.bot.utils.CommandUtils;
 
 /**
  * @author zixuan007
@@ -18,13 +18,10 @@ public class ConsoleCommandSenderC extends ConsoleCommandSender {
 
     @Override
     public void sendMessage(String message) {
-        StringBuilder stringBuilder = new StringBuilder();
         message = this.getServer().getLanguage().translateString(message);
 
-        stringBuilder.append(message.trim());
-
-        if (BotPlugin.getInstance().isShowConsoleMessage() && stringBuilder.toString().length() > 1) {
-            BotPlugin.getMiraiGroup().sendMessageMirai(CommandUtils.filterColor(stringBuilder.toString()));
+        if (BotPlugin.getInstance().isShowConsoleMessage() && message.length() > 1) {
+            BotPlugin.getInstance().getStringBuilder().append(TextFormat.clean(message.trim()) + "\n");
         }
 
     }
