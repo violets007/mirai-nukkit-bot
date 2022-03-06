@@ -23,13 +23,13 @@ public class BlackBEQueryInfo {
         private String xuid;
         private String info;
         private int level;
-        private int qq;
+        private String qq;
         private List<String> photos;
 
         public BlackBEQueryVO() {
         }
 
-        public BlackBEQueryVO(String uuid, String name, String black_id, String xuid, String info, int level, int qq, List<String> photos) {
+        public BlackBEQueryVO(String uuid, String name, String black_id, String xuid, String info, int level, String qq, List<String> photos) {
             this.uuid = uuid;
             this.name = name;
             this.black_id = black_id;
@@ -88,11 +88,11 @@ public class BlackBEQueryInfo {
             this.level = level;
         }
 
-        public int getQq() {
+        public String getQq() {
             return qq;
         }
 
-        public void setQq(int qq) {
+        public void setQq(String qq) {
             this.qq = qq;
         }
 

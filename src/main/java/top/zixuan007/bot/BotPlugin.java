@@ -127,7 +127,6 @@ public class BotPlugin extends PluginBase implements Listener {
     @EventHandler
     public void onGroupMessageReceive(MiraiGroupMessageEvent e) {
         String message = e.getMessage();
-        String command = message.split(" ")[0];
         List<Long> groupIds = this.config.getLongList("receive-group");
         MiraiBot bot = MiraiBot.getBot(e.getBotID());
         ConsoleCommandSender consoleSender = getServer().getConsoleSender();
@@ -142,7 +141,7 @@ public class BotPlugin extends PluginBase implements Listener {
                 return;
             }
         }
-
+        String command = message.split(" ")[0];
         // 差个几十毫秒暂时先不管
         lastSendMessageTime = System.currentTimeMillis();
         this.lastExecuteTime.put(e.getSenderID(), System.currentTimeMillis());
@@ -176,10 +175,11 @@ public class BotPlugin extends PluginBase implements Listener {
                     return;
                 }
 
+                String playerName = commands[1].replaceAll("&", " ");
                 String xuid = "";
                 if (commands.length > 2) xuid = commands[2];
 
-                getServer().getScheduler().scheduleAsyncTask(this, new BlackBEQueryTask(commands[1], xuid, miraiGroup));
+                getServer().getScheduler().scheduleAsyncTask(this, new BlackBEQueryTask(playerName, xuid, miraiGroup));
                 break;
             case "#查看背包":
                 commands = message.trim().split(" ");

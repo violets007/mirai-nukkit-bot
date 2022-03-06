@@ -2,23 +2,24 @@ package top.zixuan007.bot.task;
 
 import cn.nukkit.scheduler.AsyncTask;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import me.dreamvoid.miraimc.api.bot.MiraiFriend;
 import me.dreamvoid.miraimc.api.bot.MiraiGroup;
 import top.zixuan007.bot.BotPlugin;
 import top.zixuan007.bot.pojo.BlackBEQueryInfo;
 import top.zixuan007.bot.pojo.Result;
+import top.zixuan007.bot.utils.FileUtils;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * @author zixuan007
@@ -71,9 +72,47 @@ public class BlackBEQueryTask extends AsyncTask {
                 Gson gson = new Gson();
                 Result<BlackBEQueryInfo> result = gson.fromJson(stringBuilder.toString(), new TypeToken<Result<BlackBEQueryInfo>>() {
                 }.getType());
+
+
                 if (result.getStatus() == QUERY_SUCCESS) {
                     BlackBEQueryInfo blackBEQueryInfo = result.getData();
-                    miraiGroup.sendMessageMirai(new GsonBuilder().setPrettyPrinting().create().toJson(blackBEQueryInfo.getInfo()));
+//                    miraiGroup.sendMessageMirai(new GsonBuilder().setPrettyPrinting().create().toJson(blackBEQueryInfo.getInfo()));
+
+                    String cachePath = BotPlugin.getInstance().getDataFolder() + File.separator + "cache" + File.separator;
+                    File cacheFolder = new File(cachePath);
+                    if (!cacheFolder.exists()) cacheFolder.mkdirs();
+
+                    ArrayList<String> imgIdList = new ArrayList<String>();
+                    StringBuilder message = new StringBuilder();
+                    message.append("====云黑查询列表====\n");
+                    for (BlackBEQueryInfo.BlackBEQueryVO blackBEQueryVO : blackBEQueryInfo.getInfo()) {
+                        message.append("封禁玩家名字: " + blackBEQueryVO.getName() + "\n");
+                        message.append("封禁XUID: " + blackBEQueryVO.getXuid() + "\n");
+                        message.append("违规等级: " + blackBEQueryVO.getLevel() + "\n");
+                        message.append("QQ信息: " + blackBEQueryVO.getQq() + "\n");
+                        message.append("图片证据: \n");
+                        List<String> photos = blackBEQueryVO.getPhotos();
+                        for (String photo : photos) {
+                            String imgName = photo.substring(photo.lastIndexOf("/") + 1, photo.length());
+                            BotPlugin.getInstance().getLogger().info(imgName);
+                            String localImgPath = cacheFolder.getAbsolutePath() + File.separator + imgName;
+                            BotPlugin.getInstance().getLogger().info(localImgPath);
+                            FileUtils.downloadUsingNIO("http://" + photo, localImgPath);
+                            imgIdList.add(miraiGroup.uploadImage(new File(localImgPath)));
+                        }
+                    }
+
+
+                    for (String imgId : imgIdList) {
+                        message.append("[mirai:image:$imageId]".replace("$imageId", imgId));
+                    }
+
+                    miraiGroup.sendMessageMirai(message.toString());
+
+                    // 清除缓存文件
+                    for (File file : cacheFolder.listFiles()) {
+                        file.delete();
+                    }
                 } else {
                     miraiGroup.sendMessageMirai(result.toString());
                 }
@@ -104,4 +143,6 @@ public class BlackBEQueryTask extends AsyncTask {
             }
         }
     }
+
+
 }
