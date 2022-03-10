@@ -11,6 +11,7 @@ import cn.nukkit.level.Level;
 import cn.nukkit.math.NukkitMath;
 import cn.nukkit.permission.Permission;
 import cn.nukkit.plugin.Plugin;
+import cn.nukkit.utils.ServerException;
 import cn.nukkit.utils.TextFormat;
 import me.dreamvoid.miraimc.api.MiraiBot;
 import me.dreamvoid.miraimc.api.bot.MiraiGroup;
@@ -34,6 +35,29 @@ public class CommandUtils {
             TextFormat.RED + "%d" + TextFormat.GOLD + " hours " +
             TextFormat.RED + "%d" + TextFormat.GOLD + " minutes " +
             TextFormat.RED + "%d" + TextFormat.GOLD + " seconds";
+
+    /**
+     * 异步执行
+     *
+     * @param sender
+     * @param commandLine
+     * @return
+     * @throws ServerException
+     */
+    public static boolean dispatchCommand(CommandSender sender, String commandLine) throws ServerException {
+        // First we need to check if this command is on the main thread or not, if not, warn the user
+        if (sender == null) {
+            throw new ServerException("CommandSender is not valid");
+        }
+
+        if (Server.getInstance().getCommandMap().dispatch(sender, commandLine)) {
+            return true;
+        }
+
+        sender.sendMessage(new TranslationContainer(TextFormat.RED + "%commands.generic.unknown", commandLine));
+
+        return false;
+    }
 
 
     public static boolean executeStatus(String playerName, MiraiGroup miraiGroup) {

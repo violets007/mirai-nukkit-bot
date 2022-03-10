@@ -9,6 +9,8 @@ import cn.nukkit.event.EventHandler;
 import cn.nukkit.event.EventPriority;
 import cn.nukkit.event.Listener;
 import cn.nukkit.event.player.PlayerChatEvent;
+import cn.nukkit.event.player.PlayerJoinEvent;
+import cn.nukkit.event.player.PlayerQuitEvent;
 import cn.nukkit.item.Item;
 import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
@@ -16,6 +18,7 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.plugin.PluginBase;
+import cn.nukkit.scheduler.PluginTask;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import me.dreamvoid.miraimc.api.MiraiBot;
@@ -268,7 +271,8 @@ public class BotPlugin extends PluginBase implements Listener {
 
                 String permissions = bindInfo.get("permissions");
                 consoleCommandSenderC.setOp(permissions.equals("op") ? true : false);
-                getServer().dispatchCommand(consoleCommandSenderC, executeCommand);
+
+                CommandUtils.dispatchCommand(consoleCommandSenderC, executeCommand);
                 break;
             case "#聊天显示":
                 boolean enable = this.config.getBoolean("show-server-player-chat", false);
@@ -279,6 +283,19 @@ public class BotPlugin extends PluginBase implements Listener {
                     this.config.set("show-server-player-chat", true);
                     miraiGroup.sendMessageMirai("成功开启聊天显示");
                 }
+                this.saveConfig();
+                break;
+            case "#进服显示":
+                HashMap<String, Object> tipsFormatMap = (HashMap<String, Object>) this.config.get("join-quit-tips");
+                enable = (boolean) tipsFormatMap.get("enable");
+
+                if (enable) {
+                    miraiGroup.sendMessageMirai("成功关闭进服显示");
+                } else {
+                    miraiGroup.sendMessageMirai("成功关开启服显示");
+                }
+                tipsFormatMap.put("enable", !enable);
+                this.config.set("join-quit-tips", tipsFormatMap);
                 this.saveConfig();
                 break;
             case "#在线玩家":
@@ -377,6 +394,41 @@ public class BotPlugin extends PluginBase implements Listener {
 
         }
 
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        String name = event.getPlayer().getName();
+        List<Long> groupIds = this.config.getLongList("receive-group");
+
+        HashMap<String, Object> tipsFormatMap = (HashMap<String, Object>) this.getConfig().get("join-quit-tips");
+        boolean enable = (boolean) tipsFormatMap.get("enable");
+
+        if (enable) {
+            for (Long groupId : groupIds) {
+                String message = this.tips.getVarManager().toMessage(event.getPlayer(), tipsFormatMap.get("join").toString());
+                message = TextFormat.clean(message);
+                bot.getGroup(groupId).sendMessageMirai(message);
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.LOW)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        String name = event.getPlayer().getName();
+        List<Long> groupIds = this.config.getLongList("receive-group");
+
+        HashMap<String, Object> tipsFormatMap = (HashMap<String, Object>) this.getConfig().get("join-quit-tips");
+        boolean enable = (boolean) tipsFormatMap.get("enable");
+
+        if (enable) {
+            for (Long groupId : groupIds) {
+                String message = this.tips.getVarManager().toMessage(event.getPlayer(), tipsFormatMap.get("exit").toString());
+                message = TextFormat.clean(message);
+                bot.getGroup(groupId).sendMessageMirai(message);
+
+            }
+        }
     }
 
     /*

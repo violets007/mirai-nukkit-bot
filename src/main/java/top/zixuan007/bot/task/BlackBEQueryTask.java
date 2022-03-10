@@ -90,6 +90,7 @@ public class BlackBEQueryTask extends AsyncTask {
                         message.append("封禁XUID: " + blackBEQueryVO.getXuid() + "\n");
                         message.append("违规等级: " + blackBEQueryVO.getLevel() + "\n");
                         message.append("QQ信息: " + blackBEQueryVO.getQq() + "\n");
+                        message.append("描述信息: " + blackBEQueryVO.getInfo() + "\n");
                         message.append("图片证据: \n");
                         List<String> photos = blackBEQueryVO.getPhotos();
                         for (String photo : photos) {
