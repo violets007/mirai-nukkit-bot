@@ -6,10 +6,7 @@ receive-group:
 # 禁止QQ群执行的命令 查询命令容易刷屏被限制,建议禁止
 prohibition-execution:
   - help
-  - stop
   - status
-  - say
-  - list
 
 # 显示服务器玩家聊天消息在QQ群
 show-server-player-chat: true

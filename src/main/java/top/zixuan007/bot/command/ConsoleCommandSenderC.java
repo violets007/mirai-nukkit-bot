@@ -21,7 +21,11 @@ public class ConsoleCommandSenderC extends ConsoleCommandSender {
         message = this.getServer().getLanguage().translateString(message);
 
         if (BotPlugin.getInstance().isShowConsoleMessage() && message.length() > 1) {
-            BotPlugin.getInstance().getStringBuilder().append(TextFormat.clean(message.trim()) + "\n");
+            if (BotPlugin.getInstance().getStringBuilder().length() > 1) {
+                BotPlugin.getInstance().getStringBuilder().append("\n" + TextFormat.clean(message.trim()));
+            } else {
+                BotPlugin.getInstance().getStringBuilder().append(TextFormat.clean(message.trim()));
+            }
         }
 
     }

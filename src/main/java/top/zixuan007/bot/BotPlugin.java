@@ -18,13 +18,11 @@ import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.Tag;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.plugin.PluginBase;
-import cn.nukkit.scheduler.PluginTask;
 import cn.nukkit.utils.Config;
 import cn.nukkit.utils.TextFormat;
 import me.dreamvoid.miraimc.api.MiraiBot;
 import me.dreamvoid.miraimc.api.bot.MiraiGroup;
 import me.dreamvoid.miraimc.nukkit.event.MiraiBotOnlineEvent;
-import me.dreamvoid.miraimc.nukkit.event.MiraiFriendMessageEvent;
 import me.dreamvoid.miraimc.nukkit.event.MiraiGroupMessageEvent;
 import tip.Main;
 import top.zixuan007.bot.command.ConsoleCommandSenderC;
@@ -190,7 +188,7 @@ public class BotPlugin extends PluginBase implements Listener {
                     group.sendMessageMirai("命令执行有误,请使用 #查看背包 [playerName]");
                     return;
                 }
-
+                commands[1] = commands[1].replaceAll("&", " ");
                 CompoundTag offlinePlayerData = getServer().getOfflinePlayerData(commands[1]);
                 if (offlinePlayerData == null) {
                     group.sendMessageMirai("无法找到玩家: " + commands[1]);
@@ -406,8 +404,12 @@ public class BotPlugin extends PluginBase implements Listener {
 
         if (enable) {
             for (Long groupId : groupIds) {
-                String message = this.tips.getVarManager().toMessage(event.getPlayer(), tipsFormatMap.get("join").toString());
-                message = TextFormat.clean(message);
+                String message = TextFormat.clean(tipsFormatMap.get("join").toString());
+                if (this.tips != null) {
+                    message = this.tips.getVarManager().toMessage(event.getPlayer(), tipsFormatMap.get("join").toString());
+                } else {
+                    message = message.replace("{name}", name);
+                }
                 bot.getGroup(groupId).sendMessageMirai(message);
             }
         }
@@ -423,31 +425,18 @@ public class BotPlugin extends PluginBase implements Listener {
 
         if (enable) {
             for (Long groupId : groupIds) {
-                String message = this.tips.getVarManager().toMessage(event.getPlayer(), tipsFormatMap.get("exit").toString());
+                String message = TextFormat.clean(tipsFormatMap.get("exit").toString());
+                if (this.tips != null) {
+                    message = this.tips.getVarManager().toMessage(event.getPlayer(), tipsFormatMap.get("exit").toString());
+                } else {
+                    message = message.replace("{name}", name);
+                }
                 message = TextFormat.clean(message);
                 bot.getGroup(groupId).sendMessageMirai(message);
 
             }
         }
     }
-
-    /*
-    调试代码
-    @EventHandler
-    public void onFriend(MiraiFriendMessageEvent event) {
-
-        String message = event.getMessage();
-        String[] commands = message.trim().split(" ");
-        if (commands.length < 2) {
-            event.getFriend().sendMessageMirai("命令执行有误,请使用 #查云黑 <playerName> [xuid]");
-            return;
-        }
-
-        String xuid = "";
-        if (commands.length > 2) xuid = commands[2];
-
-        getServer().getScheduler().scheduleAsyncTask(this, new BlackBEQueryTask(commands[1], xuid, event.getFriend()));
-    }*/
 
 
     public void sendHelpByQQGroup(MiraiGroup miraiGroup) {
