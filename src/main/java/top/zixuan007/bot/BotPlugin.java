@@ -138,14 +138,15 @@ public class BotPlugin extends PluginBase implements Listener {
         if (!groupIds.contains(e.getGroupID())) return;
         if (this.lastExecuteTime.containsKey(e.getSenderID())) {
             if ((System.currentTimeMillis() - lastSendMessageTime < 3000)) {
-                group.sendMessageMirai("[mirai:at:" + e.getSenderID() + "] ：" + "执行任务过快,请稍后");
+//                group.sendMessageMirai("[mirai:at:" + e.getSenderID() + "] ：" + "执行任务过快,请稍后");
                 return;
             }
         }
         String command = message.split(" ")[0];
         // 差个几十毫秒暂时先不管
         lastSendMessageTime = System.currentTimeMillis();
-        this.lastExecuteTime.put(e.getSenderID(), System.currentTimeMillis());
+        if (command.contains("#"))
+            this.lastExecuteTime.put(e.getSenderID(), System.currentTimeMillis());
         setMiraiGroup(group);
         stringBuilder.delete(0, stringBuilder.length());
         this.showConsoleMessage = true;
@@ -302,7 +303,7 @@ public class BotPlugin extends PluginBase implements Listener {
             case "#mcpe":
                 commands = message.split(" ");
                 if (commands.length < 2) {
-                    group.sendMessageMirai("命令执行有误,示例:#查服务器 ip port");
+                    group.sendMessageMirai("命令执行有误,示例:#mcpe ip port");
                     return;
                 }
 
