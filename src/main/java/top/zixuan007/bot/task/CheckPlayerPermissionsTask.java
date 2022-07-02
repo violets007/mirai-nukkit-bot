@@ -1,5 +1,6 @@
 package top.zixuan007.bot.task;
 
+import cn.nukkit.permission.Permission;
 import cn.nukkit.scheduler.PluginTask;
 import cn.nukkit.utils.Config;
 import top.zixuan007.bot.BotPlugin;
@@ -36,7 +37,7 @@ public class CheckPlayerPermissionsTask extends PluginTask<BotPlugin> {
             if (!opList.contains(entry.getKey())) {
                 value.put("permissions", "user");
             } else {
-                value.put("permissions", "op");
+                value.put("permissions", Permission.DEFAULT_OP);
             }
             bindConfig.set(entry.getKey(), value);
             bindConfig.save();

@@ -1,6 +1,6 @@
 name: mirai-nukkit-bot
 main: top.zixuan007.bot.BotPlugin
-version: "1.1.0"
+version: "1.2.0"
 api: [ "1.0.9" ]
 load: POSTWORLD
 author: "zixuan007"

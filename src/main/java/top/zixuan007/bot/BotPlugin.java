@@ -16,6 +16,7 @@ import cn.nukkit.nbt.NBTIO;
 import cn.nukkit.nbt.tag.CompoundTag;
 import cn.nukkit.nbt.tag.ListTag;
 import cn.nukkit.nbt.tag.Tag;
+import cn.nukkit.permission.Permission;
 import cn.nukkit.plugin.Plugin;
 import cn.nukkit.plugin.PluginBase;
 import cn.nukkit.utils.Config;
@@ -249,6 +250,8 @@ public class BotPlugin extends PluginBase implements Listener {
                 group.sendMessageMirai(stringBuilder.toString());
                 break;
             case "#执行命令":
+
+
                 commands = message.trim().split(" ");
                 if (commands.length < 2) {
                     group.sendMessageMirai("命令执行有误,示例:#执行命令 op vilotes");
@@ -274,6 +277,10 @@ public class BotPlugin extends PluginBase implements Listener {
                 CommandUtils.dispatchCommand(consoleCommandSenderC, executeCommand);
                 break;
             case "#聊天显示":
+                if (!Permission.DEFAULT_OP.equals(BotPlugin.getInstance().getPermissionByName(name))) {
+                    miraiGroup.sendMessageMirai("你没权权限执行此操作");
+                    return;
+                }
                 boolean enable = this.config.getBoolean("show-server-player-chat", false);
                 if (enable) {
                     this.config.set("show-server-player-chat", false);
@@ -285,6 +292,10 @@ public class BotPlugin extends PluginBase implements Listener {
                 this.saveConfig();
                 break;
             case "#进服显示":
+                if (!Permission.DEFAULT_OP.equals(BotPlugin.getInstance().getPermissionByName(name))) {
+                    miraiGroup.sendMessageMirai("你没权权限执行此操作");
+                    return;
+                }
                 HashMap<String, Object> tipsFormatMap = (HashMap<String, Object>) this.config.get("join-quit-tips");
                 enable = (boolean) tipsFormatMap.get("enable");
 
@@ -327,6 +338,10 @@ public class BotPlugin extends PluginBase implements Listener {
 
                 break;
             case "#禁止命令":
+                if (!Permission.DEFAULT_OP.equals(BotPlugin.getInstance().getPermissionByName(name))) {
+                    miraiGroup.sendMessageMirai("你没权权限执行此操作");
+                    return;
+                }
                 commands = message.split(" ");
                 if (commands.length < 2) {
                     group.sendMessageMirai("命令执行有误,示例:#禁用命令 kill");
@@ -448,10 +463,11 @@ public class BotPlugin extends PluginBase implements Listener {
         stringBuilder.append("#聊天显示\n");
         stringBuilder.append("#在线玩家\n");
         stringBuilder.append("#服务器状态\n");
+        stringBuilder.append("#发消息 [内容]\n");
         stringBuilder.append("#mcpe [ip] [port]\n");
         stringBuilder.append("#执行命令 [args...]\n");
         stringBuilder.append("#查看背包 [playerName]\n");
-        stringBuilder.append("#禁止命令 [args...]  >> 禁止群玩家执行\n");
+        stringBuilder.append("#禁止命令 游戏命令 >> 禁止群玩家执行\n");
         stringBuilder.append("==群帮助命令==");
         miraiGroup.sendMessageMirai(stringBuilder.toString());
     }
