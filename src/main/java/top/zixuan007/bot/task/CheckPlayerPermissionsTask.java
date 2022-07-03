@@ -34,7 +34,7 @@ public class CheckPlayerPermissionsTask extends PluginTask<BotPlugin> {
             Config opConfig = getOwner().getServer().getOps();
             String permissions = value.get("permissions");
             Set<String> opList = opConfig.getKeys();
-            if (!opList.contains(entry.getKey())) {
+            if (!opList.contains(entry.getKey().toLowerCase())) {
                 value.put("permissions", "user");
             } else {
                 value.put("permissions", Permission.DEFAULT_OP);
